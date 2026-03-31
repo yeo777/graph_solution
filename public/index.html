@@ -41,8 +41,23 @@
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
+        /* --- 크라임씬 폴리스 라인 --- */
+        .police-line-wrap {
+            position: absolute; width: 100vw; height: 100vh; overflow: hidden; top: 0; left: 0; pointer-events: none; z-index: 15;
+            opacity: 0.3; /* [수정] 불투명도 줄임 */
+        }
+        .police-line {
+            position: absolute; width: 120vw; height: 60px; left: -10vw;
+            background: repeating-linear-gradient(45deg, #fbbf24, #fbbf24 30px, #000000 30px, #000000 60px);
+            color: white; font-size: 2.5rem; font-weight: 900; line-height: 60px; text-align: center;
+            letter-spacing: 10px; text-shadow: 2px 2px 0 #000, -2px -2px 0 #000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8); white-space: nowrap;
+        }
+        .line-1 { top: 20%; transform: rotate(-5deg); }
+        .line-2 { bottom: 20%; transform: rotate(3deg); }
+
         /* --- 텍스트 박스 공통 --- */
-        #scene2, #scenePrep, #sceneMission, #sceneProblem1, #sceneSpecialTeach, #sceneSpecialPractice {
+        #scene2, #scenePrep, #sceneMission, #sceneProblem1, #sceneSpecialTeach, #sceneSpecialPractice, #sceneFinal {
             flex-direction: column; text-align: center;
             line-height: 1.8; font-size: 2.5rem; font-weight: 700;
             background-color: #020617; z-index: 40;
@@ -54,22 +69,24 @@
             box-shadow: 0 0 30px rgba(0,0,0,0.5);
             min-width: 600px; min-height: 350px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
+            gap: 15px; z-index: 20;
         }
 
         .equation-box {
             background: #1e293b; padding: 20px 40px; border-radius: 10px;
-            margin: 20px 0; font-family: 'Arial', sans-serif; font-size: 2.2rem;
-            border: 1px solid #334155; display: inline-block;
+            margin: 15px auto; font-family: 'Arial', sans-serif; font-size: 2.2rem;
+            border: 1px solid #334155; display: block; width: fit-content; text-align: center;
         }
 
         /* 특수 훈련 UI용 클래스 */
-        .flex-row { display: flex; gap: 30px; justify-content: center; width: 100%; align-items: stretch; }
+        .flex-row { display: flex; gap: 30px; justify-content: center; width: 100%; align-items: stretch; margin-top: 20px; }
         .training-box {
             flex: 1; background: linear-gradient(145deg, #0f172a, #1e293b); 
             padding: 25px; border-radius: 15px; border: 2px dashed #475569; 
             box-shadow: inset 0 0 20px rgba(0,0,0,0.5); position: relative;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
         }
-        .arrow-right { font-size: 2.5rem; color: #fbbf24; font-weight: bold; margin: 0 15px; }
+        .arrow-right { font-size: 2.5rem; color: #fbbf24; font-weight: bold; margin: 0 15px; align-self: center; }
 
         /* --- 모달창 공통 --- */
         #modalOverlay, #graphModalOverlay, #strategyModalOverlay, #summaryModalOverlay, #radioModalOverlay {
@@ -106,13 +123,6 @@
 
         #warningMsg { color: #fbbf24; font-size: 1.2rem; margin-top: 20px; min-height: 30px; font-weight: bold; }
 
-        /* --- 긴급 무전 점멸 애니메이션 --- */
-        @keyframes emergencyFlash {
-            0%, 100% { background-color: rgba(239, 68, 68, 0.1); border-color: #ef4444; box-shadow: 0 0 80px rgba(239, 68, 68, 0.8); }
-            50% { background-color: rgba(239, 68, 68, 0.4); border-color: #f87171; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
-        }
-        .emergency-active { animation: emergencyFlash 0.8s infinite !important; }
-
         /* --- Scene 3: 레이더 --- */
         #scene3 { z-index: 10; background: transparent; }
         #radarCanvas { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
@@ -122,7 +132,12 @@
             display: flex; align-items: flex-end; width: 90%; max-width: 1200px;
             gap: 20px; z-index: 20; pointer-events: none; 
         }
-        .npc-image { width: 200px; height: auto; border-radius: 10px; filter: drop-shadow(0 0 30px rgba(0,0,0,0.8)); }
+        .npc-side {
+            position: absolute; bottom: -20px; left: 5vw; width: 250px; height: auto;
+            filter: drop-shadow(0 0 30px rgba(0,0,0,0.8)); z-index: 45; pointer-events: none;
+        }
+        .ui-container .npc-image { width: 200px; height: auto; border-radius: 10px; filter: drop-shadow(0 0 30px rgba(0,0,0,0.8)); }
+        
         .dialog-box {
             flex-grow: 1; background: rgba(2, 6, 23, 0.9); border: 4px solid #38bdf8;
             border-radius: 20px; padding: 35px; color: white; font-size: 1.8rem;
@@ -145,6 +160,36 @@
         .summary-flex { display: flex; justify-content: space-between; align-items: center; margin: 30px 0; }
         .summary-box { background: #1e293b; border: 2px solid #475569; border-radius: 15px; padding: 20px; width: 40%; font-size: 1.6rem; }
         .summary-arrow { font-size: 3rem; color: #fbbf24; font-weight: bold; }
+
+        /* --- 최종 정리 표 & 검거 완료 도장 --- */
+        .final-table {
+            width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 1.5rem; background: #0f172a;
+        }
+        .final-table th, .final-table td {
+            border: 2px solid #475569; padding: 15px; text-align: center; vertical-align: middle;
+        }
+        .final-table th { background: #1e293b; color: #cbd5e1; font-weight: 700; }
+        
+        #stampOverlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); z-index: 300;
+            display: none; justify-content: center; align-items: center; pointer-events: none;
+        }
+        .stamp-box {
+            border: 8px solid #ef4444; border-radius: 20px;
+            padding: 20px 40px; color: #ef4444; font-size: 6rem; font-weight: 900;
+            transform: rotate(-15deg) scale(3); opacity: 0; 
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.6), inset 0 0 20px rgba(239, 68, 68, 0.5);
+            background: rgba(0,0,0,0.8);
+        }
+        .stamp-anim {
+            animation: stampBang 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        @keyframes stampBang {
+            0% { transform: rotate(-15deg) scale(5); opacity: 0; }
+            50% { transform: rotate(-15deg) scale(0.8); opacity: 1; }
+            100% { transform: rotate(-15deg) scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -155,8 +200,13 @@
     </div>
 
     <div id="scene2" class="scene">
-        <p><span style="color: #ef4444; font-size: 4rem;">비상상황입니다.</span><br><br>
-        시청 근처에서 사건을 일으킨 범인이<br>차량을 타고 도주중이라는 신고가 들어왔습니다.</p>
+        <div class="police-line-wrap">
+            <div class="police-line line-1">POLICE LINE DO NOT CROSS 🚨 POLICE LINE DO NOT CROSS 🚨 POLICE LINE DO NOT CROSS 🚨 POLICE LINE</div>
+            <div class="police-line line-2">POLICE LINE DO NOT CROSS 🚨 POLICE LINE DO NOT CROSS 🚨 POLICE LINE DO NOT CROSS 🚨 POLICE LINE</div>
+        </div>
+        <div class="text-box" style="gap: 5px; padding: 30px 80px;"> <p style="margin:0;"><span style="color: #ef4444; font-size: 4rem;">비상상황입니다.</span></p>
+            <p style="margin:0; font-size: 2rem;">시청 근처에서 사건을 일으킨 범인이<br>차량을 타고 도주중이라는 신고가 들어왔습니다.</p>
+        </div>
         <div class="hint">화면 클릭 ▼</div>
     </div>
 
@@ -181,23 +231,23 @@
     </div>
 
     <div id="scenePrep" class="scene">
-        <div class="text-box">
-            <div id="q1-container">
-                <span style="color: #38bdf8; font-size: 2rem;">[수사 장비 점검 - Q1]</span><br>
-                다음 연립방정식의 해를 순서쌍으로 나타내시오.
+        <div class="text-box" style="margin-left: 15vw;">
+            <div id="q1-container" style="display:flex; flex-direction: column; align-items: center;">
+                <span style="color: #38bdf8; font-size: 2rem;">[수사 장비 점검 - Q1]</span>
+                <div>다음 연립방정식의 해를 순서쌍으로 나타내시오.</div>
                 <div class="equation-box">x + y = 5<br>2x - y = 4</div>
                 <div id="q1-ans" style="opacity: 0; color: #10b981; font-size: 2.2rem; font-weight: 900; transition: opacity 0.3s;">정답: (3, 2)</div>
             </div>
-            <div id="q2-container" style="display: none;">
-                <span style="color: #fbbf24; font-size: 2rem;">[수사 장비 점검 - Q2]</span><br>
-                일차함수 <span style="color:#fbbf24;">y = x - 1</span> 의 그래프를 그려보자!
+            <div id="q2-container" style="display: none; flex-direction: column; align-items: center;">
+                <span style="color: #fbbf24; font-size: 2rem;">[수사 장비 점검 - Q2]</span>
+                <div>일차함수 <span style="color:#fbbf24;">y = x - 1</span> 의 그래프를 그려보자!</div>
             </div>
         </div>
         <div class="hint">화면 클릭 ▼</div>
     </div>
 
     <div id="sceneMission" class="scene">
-        <div class="text-box">
+        <div class="text-box" style="margin-left: 15vw;">
             <span style="color: #fbbf24; font-size: 2.5rem; display: block; margin-bottom: 20px;">[오늘의 미션]</span>
             연립방정식의 해와 두 그래프의 교점이<br>
             어떤 관계가 있는지 밝혀내고 범인을 검거하라!
@@ -209,7 +259,7 @@
 
     <div id="scene3" class="scene">
         <div class="ui-container">
-            <img src="npc.webp" alt="NPC" class="npc-image" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'><rect width=\'200\' height=\'200\' fill=\'#1e293b\' rx=\'20\'/><text x=\'50%\' y=\'50%\' fill=\'white\' font-size=\'24\' font-weight=\'bold\' dominant-baseline=\'middle\' text-anchor=\'middle\'>선생님</text></svg>'">
+            <img id="radarNpc" src="npc(1).webp" class="npc-image" alt="웃음">
             <div class="dialog-box" id="dialogText">
                 현재 경찰 관제 센터에서는<br>범인의 도주 예상 경로를 파악했어요!
             </div>
@@ -238,7 +288,7 @@
 
     <div id="summaryModalOverlay">
         <div class="modal-content" style="width: 800px; padding: 50px; cursor: pointer;">
-            <div class="modal-title">📁 사건 종합 보고서</div>
+            <div class="modal-title">📁 사건 해결 메뉴얼</div>
             <div style="font-size: 2.2rem; color: #a7f3d0; background: #064e3b; padding: 30px; border-radius: 15px; border: 3px solid #10b981; font-weight: bold; line-height: 1.6; word-break: keep-all;">
                 연립방정식의 해는<br>두 일차함수의 그래프의 교점의 좌표와 같다.
             </div>
@@ -246,38 +296,32 @@
         </div>
     </div>
 
-    <div id="radioModalOverlay">
-        <div id="radioModalContent" class="modal-content emergency-active" style="width: 800px; padding: 50px; cursor: pointer;">
-            <div id="radioTitle" class="modal-title" style="color: #ef4444; font-size: 3.5rem;">🚨 긴급 무전 수신 중...</div>
-            <div id="radioText" style="font-size: 2.2rem; color: white; line-height: 1.8; display: none;">
-                관제센터에서 긴급 무전이 들어왔습니다!<br>
-                방금 잡은 범인의 <span style="color: #ef4444; font-weight: bold;">공범 2명</span>이 각각 다른 구역에서 도주 중이라고 합니다.<br>
-                우리 수사팀의 지원이 필요하다네요!
-            </div>
-            <div class="hint" style="position: relative; bottom: auto; right: auto; margin-top: 40px; font-size: 1.2rem;">화면 클릭 ▼</div>
-        </div>
-    </div>
-
     <div id="sceneProblem1" class="scene">
-        <div class="text-box" style="min-width: 900px;">
-            <span style="color: #ef4444; font-size: 2.5rem; display: block; margin-bottom: 20px;">[추가 지령: 공범 검거 작전]</span>
-            <div style="font-size: 1.8rem; margin-bottom: 30px;">다음 두 일차방정식의 그래프의 교점의 좌표(잠복 위치)를 구하시오.</div>
+        <div class="text-box" style="min-width: 900px; margin-left: 15vw;">
+            <span style="color: #ef4444; font-size: 2.5rem; display: block;">[추가 지령: 공범 검거 작전]</span>
+            <div style="font-size: 1.8rem;">다음 두 일차방정식의 그래프의 교점의 좌표(잠복 위치)를 구하시오.</div>
             
-            <div style="display: flex; gap: 40px; justify-content: center; width: 100%;">
-                <div style="flex: 1; background: #1e293b; padding: 30px; border-radius: 15px; border: 2px solid #475569;">
+            <div class="flex-row">
+                <div class="training-box">
                     <span style="color: #38bdf8; font-size: 1.8rem;">(1) 1번 공범 도주로</span>
-                    <div class="equation-box" style="font-size: 1.8rem; margin: 15px 0;">x - y = 1<br>x - 4y + 2 = 0</div>
-                    <div id="p1-ans" style="opacity: 0; color: #10b981; font-size: 2rem; font-weight: 900; transition: opacity 0.3s;">교점: (2, 1)</div>
+                    <div class="equation-box">x - y = 1<br>x - 4y + 2 = 0</div>
+                    <div id="p1-ans" style="opacity: 0; color: #10b981; font-size: 2rem; font-weight: 900; transition: opacity 0.3s; display:flex; flex-direction:column; align-items:center;">
+                        교점: (2, 1)
+                        <canvas id="prob1Canvas1" width="150" height="150" style="background:#0f172a; border:2px solid #475569; border-radius:10px; margin-top:10px;"></canvas>
+                    </div>
                 </div>
-                <div style="flex: 1; background: #1e293b; padding: 30px; border-radius: 15px; border: 2px solid #475569;">
+                <div class="training-box">
                     <span style="color: #fbbf24; font-size: 1.8rem;">(2) 2번 공범 도주로</span>
-                    <div class="equation-box" style="font-size: 1.8rem; margin: 15px 0;">3x + 2y = 1<br>y = 3x + 8</div>
-                    <div id="p2-ans" style="opacity: 0; color: #10b981; font-size: 2rem; font-weight: 900; transition: opacity 0.3s;">교점: (-5/3, 3)</div>
+                    <div class="equation-box">3x + 2y = 1<br>y = 3x + 8</div>
+                    <div id="p2-ans" style="opacity: 0; color: #10b981; font-size: 2rem; font-weight: 900; transition: opacity 0.3s; display:flex; flex-direction:column; align-items:center;">
+                        교점: (-5/3, 3)
+                        <canvas id="prob1Canvas2" width="150" height="150" style="background:#0f172a; border:2px solid #475569; border-radius:10px; margin-top:10px;"></canvas>
+                    </div>
                 </div>
             </div>
             
-            <div id="prob-hint" style="margin-top: 30px; color: #cbd5e1; font-size: 1.6rem; opacity: 0; transition: opacity 0.5s; line-height: 1.6;">
-                "만약 그래프를 그렸다면 분수 좌표(-5/3)를 정확히 찍을 수 있었을까요?<br>
+            <div id="prob-hint" style="color: #cbd5e1; font-size: 1.6rem; opacity: 0; transition: opacity 0.5s; line-height: 1.6; margin-top: 15px;">
+                "만약 그래프를 그렸다면 분수 좌표를 정확히 찍을 수 있었을까요?<br>
                 <span style="color: #fbbf24; font-weight: bold;">연립방정식을 푸는 것</span>이 얼마나 정확하고 강력한 도구인지 알겠죠?"
             </div>
         </div>
@@ -285,9 +329,9 @@
     </div>
 
     <div id="sceneSpecialTeach" class="scene">
-        <div class="text-box" style="min-width: 1100px; padding: 40px;">
-            <span style="color: #a855f7; font-size: 2.5rem; display: block; margin-bottom: 10px;">[특수 상황 훈련: 평행과 일치]</span>
-            <div style="font-size: 1.6rem; margin-bottom: 20px; color: #cbd5e1;">연립방정식의 그래프가 특수한 위치 관계일 때 해는 어떻게 될까요? 직접 눈으로 확인해 봅시다.</div>
+        <div class="text-box" style="min-width: 1000px; padding: 40px; margin-left: 15vw;">
+            <span style="color: #a855f7; font-size: 2.5rem; display: block;">[특수 상황 훈련: 평행과 일치]</span>
+            <div style="font-size: 1.6rem; color: #cbd5e1;">연립방정식의 그래프가 특수한 위치 관계일 때 해는 어떻게 될까요? 직접 확인해 봅시다.</div>
             
             <div class="flex-row">
                 <div class="training-box">
@@ -300,15 +344,15 @@
                         </div>
                     </div>
                     <div id="teach1-graph-area" style="opacity: 0; transition: opacity 0.3s; display: flex; flex-direction: column; align-items: center;">
-                        <canvas id="teachCanvas1" width="400" height="400" style="width: 200px; height: 200px; background:#0f172a; border:2px solid #475569; border-radius:10px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);"></canvas>
-                        <div style="margin-top: 15px; color: #f87171; font-size: 1.4rem; font-weight: bold; line-height: 1.5;">
-                            기울기 동일, y절편 다름 ➔ 서로 평행함<br>교점 없음 ➔ <span style="font-size: 1.8rem; color: white;">해가 없다</span>
+                        <canvas id="teachCanvas1" width="400" height="400" style="width: 180px; height: 180px; background:#0f172a; border:2px solid #475569; border-radius:10px;"></canvas>
+                        <div style="margin-top: 10px; color: #f87171; font-size: 1.6rem; font-weight: bold; line-height: 1.5;">
+                            ➔ 서로 평행함<br>교점 없음 ➔ <span style="font-size: 1.8rem; color: white;">해가 없다</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="training-box">
-                    <span style="color: #10b981; font-size: 1.8rem;">Case 2. 최종 보스 추격</span>
+                    <span style="color: #10b981; font-size: 1.8rem;">Case 2. 특수 정예팀</span>
                     <div style="display:flex; justify-content: center; align-items: center; margin: 10px 0;">
                         <div class="equation-box" style="font-size: 1.5rem; padding: 10px 20px;">2x + y = 2<br>4x + 2y = 4</div>
                         <div class="arrow-right">➔</div>
@@ -317,9 +361,9 @@
                         </div>
                     </div>
                     <div id="teach2-graph-area" style="opacity: 0; transition: opacity 0.3s; display: flex; flex-direction: column; align-items: center;">
-                        <canvas id="teachCanvas2" width="400" height="400" style="width: 200px; height: 200px; background:#0f172a; border:2px solid #475569; border-radius:10px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);"></canvas>
-                        <div style="margin-top: 15px; color: #10b981; font-size: 1.4rem; font-weight: bold; line-height: 1.5;">
-                            기울기, y절편 모두 동일 ➔ 서로 일치함<br>교점 무수히 많음 ➔ <span style="font-size: 1.8rem; color: white;">해가 무수히 많다</span>
+                        <canvas id="teachCanvas2" width="400" height="400" style="width: 180px; height: 180px; background:#0f172a; border:2px solid #475569; border-radius:10px;"></canvas>
+                        <div style="margin-top: 10px; color: #10b981; font-size: 1.6rem; font-weight: bold; line-height: 1.5;">
+                            ➔ 서로 일치함<br>교점 무수히 많음 ➔ <span style="font-size: 1.8rem; color: white;">해가 무수히 많다</span>
                         </div>
                     </div>
                 </div>
@@ -329,25 +373,27 @@
     </div>
 
     <div id="sceneSpecialPractice" class="scene">
-        <div class="text-box" style="min-width: 1000px;">
-            <span style="color: #fca5a5; font-size: 2.5rem; display: block; margin-bottom: 20px;">[최종 지령: 특수 상황 대처]</span>
-            <div style="font-size: 1.8rem; margin-bottom: 30px;">그래프를 이용하여 다음 연립방정식을 푸시오. (해의 개수 판단)</div>
+        <div class="text-box" style="min-width: 1000px; margin-left: 15vw;">
+            <span style="color: #fca5a5; font-size: 2.5rem; display: block; margin-bottom: 10px;">[최종 지령: 특수 상황 대처]</span>
+            <div style="font-size: 1.8rem;">그래프를 이용하여 다음 연립방정식을 푸시오.</div>
             
             <div class="flex-row">
-                <div class="training-box" style="padding: 30px;">
+                <div class="training-box" style="padding: 20px;">
                     <span style="color: #38bdf8; font-size: 1.8rem;">(1) 보스 추격전</span>
-                    <div class="equation-box" style="font-size: 1.8rem; margin: 15px 0;">x + 3y = 4<br>2x + 6y = 8</div>
-                    <div id="prac1-ans" style="opacity: 0; transition: opacity 0.3s; margin-top: 10px;">
-                        <div style="color: #94a3b8; font-size: 1.5rem; margin-bottom: 10px;">y = -1/3x + 4/3 <br> y = -1/3x + 4/3</div>
-                        <div style="color: #10b981; font-size: 2rem; font-weight: bold;">일치함 ➔ 해가 무수히 많다</div>
+                    <div class="equation-box" style="font-size: 1.8rem; margin: 10px auto;">x + 3y = 4<br>2x + 6y = 8</div>
+                    <div id="prac1-ans" style="opacity: 0; transition: opacity 0.3s; display: flex; flex-direction: column; align-items: center;">
+                        <div style="color: #94a3b8; font-size: 1.5rem; margin-bottom: 5px;">y = -1/3x + 4/3 <br> y = -1/3x + 4/3</div>
+                        <canvas id="pracCanvas1" width="200" height="200" style="width: 120px; height: 120px; background:#0f172a; border:2px solid #475569; border-radius:10px; margin-bottom: 5px;"></canvas>
+                        <div style="color: #10b981; font-size: 1.6rem; font-weight: bold;">일치함 ➔ 해가 무수히 많다</div>
                     </div>
                 </div>
-                <div class="training-box" style="padding: 30px;">
-                    <span style="color: #fbbf24; font-size: 1.8rem;">(2) 바리케이드 작전</span>
-                    <div class="equation-box" style="font-size: 1.8rem; margin: 15px 0;">3x - y = 3<br>6x - 2y = -4</div>
-                    <div id="prac2-ans" style="opacity: 0; transition: opacity 0.3s; margin-top: 10px;">
-                        <div style="color: #94a3b8; font-size: 1.5rem; margin-bottom: 10px;">y = 3x - 3 <br> y = 3x + 2</div>
-                        <div style="color: #f87171; font-size: 2rem; font-weight: bold;">평행함 ➔ 해가 없다</div>
+                <div class="training-box" style="padding: 20px;">
+                    <span style="color: #fbbf24; font-size: 1.8rem;">(2) 감시 작전</span>
+                    <div class="equation-box" style="font-size: 1.8rem; margin: 10px auto;">3x - y = 3<br>6x - 2y = -4</div>
+                    <div id="prac2-ans" style="opacity: 0; transition: opacity 0.3s; display: flex; flex-direction: column; align-items: center;">
+                        <div style="color: #94a3b8; font-size: 1.5rem; margin-bottom: 5px;">y = 3x - 3 <br> y = 3x + 2</div>
+                        <canvas id="pracCanvas2" width="200" height="200" style="width: 120px; height: 120px; background:#0f172a; border:2px solid #475569; border-radius:10px; margin-bottom: 5px;"></canvas>
+                        <div style="color: #f87171; font-size: 1.6rem; font-weight: bold;">평행함 ➔ 해가 없다</div>
                     </div>
                 </div>
             </div>
@@ -355,7 +401,49 @@
         <div class="hint" id="pracHintText">화면 클릭하여 정답 확인 ▼</div>
     </div>
 
+    <div id="sceneFinal" class="scene">
+        <div class="text-box" style="min-width: 1000px; padding: 40px; margin-left: 15vw; position: relative;">
+            <span style="color: #fbbf24; font-size: 2.2rem; margin-bottom: 10px;">[연립방정식과 그래프의 관계 정리]</span>
+            <table class="final-table">
+                <tr>
+                    <th>두 일차방정식의<br>그래프의 위치 관계</th>
+                    <td><canvas id="sumCanvas1" width="150" height="150" style="background:#020617; border-radius:5px; margin-bottom:5px;"></canvas><br><span style="color:#fca5a5">한 점</span></td>
+                    <td><canvas id="sumCanvas2" width="150" height="150" style="background:#020617; border-radius:5px; margin-bottom:5px;"></canvas><br><span style="color:#fbbf24">평행</span></td>
+                    <td><canvas id="sumCanvas3" width="150" height="150" style="background:#020617; border-radius:5px; margin-bottom:5px;"></canvas><br><span style="color:#38bdf8">일치</span></td>
+                </tr>
+                <tr>
+                    <th>두 그래프의 교점</th>
+                    <td>1개</td>
+                    <td>없다.</td>
+                    <td>무수히 많다.</td>
+                </tr>
+                <tr>
+                    <th>연립방정식의 해</th>
+                    <td>1개</td>
+                    <td>없다.</td>
+                    <td>무수히 많다.</td>
+                </tr>
+            </table>
+        </div>
+        <div class="hint" id="finalHintText">화면을 클릭하여 최종 완료 ▼</div>
+        
+        <div id="stampOverlay">
+            <div id="stampBox" class="stamp-box">검거 완료</div>
+        </div>
+    </div>
+
     <script>
+        // --- [수정] 수학 그래프 라인 렌더링 도우미 (끊김 완벽 방지) ---
+        function drawLineEq(ctx, slope, yInt, mcx, mcy, mScale) {
+            const x1 = -100, x2 = 100; 
+            const y1 = slope * x1 + yInt;
+            const y2 = slope * x2 + yInt;
+            ctx.beginPath();
+            ctx.moveTo(mcx + x1 * mScale, mcy - y1 * mScale);
+            ctx.lineTo(mcx + x2 * mScale, mcy - y2 * mScale);
+            ctx.stroke();
+        }
+
         let isPrepDone = false;
         let prepStep = 1;
         let radarStep = 1;
@@ -378,26 +466,10 @@
             
             if (document.getElementById('strategyModalOverlay').classList.contains('active')) return;
             
+            // [수정] 무전 모달 제거 후 바로 다음 씬으로 넘어가게 수정
             if (document.getElementById('summaryModalOverlay').classList.contains('active')) {
                 document.getElementById('summaryModalOverlay').classList.remove('active');
-                document.getElementById('radioModalOverlay').classList.add('active');
-                radarStep = 7;
-                return;
-            }
-
-            if (document.getElementById('radioModalOverlay').classList.contains('active')) {
-                if (radarStep === 7) {
-                    document.getElementById('radioModalContent').classList.remove('emergency-active');
-                    document.getElementById('radioModalContent').style.borderColor = "#38bdf8";
-                    document.getElementById('radioModalContent').style.boxShadow = "0 0 50px rgba(56, 189, 248, 0.3)";
-                    document.getElementById('radioTitle').innerText = "🚨 관제센터 무전";
-                    document.getElementById('radioTitle').style.color = "#38bdf8";
-                    document.getElementById('radioText').style.display = "block";
-                    radarStep = 8;
-                } else if (radarStep === 8) {
-                    document.getElementById('radioModalOverlay').classList.remove('active');
-                    goTo('sceneProblem1');
-                }
+                goTo('sceneProblem1');
                 return;
             }
 
@@ -419,6 +491,10 @@
                 advanceSpecialTeach();
             } else if (document.getElementById('sceneSpecialPractice').classList.contains('active')) {
                 advanceSpecialPractice();
+            } else if (document.getElementById('sceneFinal').classList.contains('active')) {
+                document.getElementById('stampOverlay').style.display = 'flex';
+                document.getElementById('stampBox').classList.add('stamp-anim');
+                document.getElementById('finalHintText').style.display = 'none';
             }
         });
 
@@ -455,11 +531,12 @@
 
         function advancePrep() {
             if (prepStep === 1) {
+                document.getElementById('q1-container').style.display = 'flex';
                 document.getElementById('q1-ans').style.opacity = '1';
                 prepStep = 2;
             } else if (prepStep === 2) {
                 document.getElementById('q1-container').style.display = 'none';
-                document.getElementById('q2-container').style.display = 'block';
+                document.getElementById('q2-container').style.display = 'flex';
                 prepStep = 3;
             } else if (prepStep === 3) {
                 document.getElementById('graphModalOverlay').classList.add('active');
@@ -471,12 +548,11 @@
             }
         }
 
-        // 공통 그리드 그리기 함수
         function drawCommonGrid(mCtx, size, mScale, mcx, mcy) {
             mCtx.clearRect(0, 0, size, size);
             mCtx.strokeStyle = 'rgba(255,255,255,0.15)'; mCtx.lineWidth = 2;
             mCtx.fillStyle = 'rgba(255,255,255,0.5)'; mCtx.font = '16px Arial';
-            for(let i=-5; i<=5; i++) {
+            for(let i=-20; i<=20; i++) {
                 mCtx.beginPath(); mCtx.moveTo(0, mcy+i*mScale); mCtx.lineTo(size, mcy+i*mScale); mCtx.stroke();
                 mCtx.beginPath(); mCtx.moveTo(mcx+i*mScale, 0); mCtx.lineTo(mcx+i*mScale, size); mCtx.stroke();
             }
@@ -493,10 +569,7 @@
             
             mCtx.strokeStyle = '#fbbf24'; mCtx.lineWidth = 8;
             mCtx.shadowBlur = 15; mCtx.shadowColor = '#fbbf24';
-            mCtx.beginPath();
-            mCtx.moveTo(mcx - 8*mScale, mcy - (-9)*mScale); 
-            mCtx.lineTo(mcx + 8*mScale, mcy - (7)*mScale);  
-            mCtx.stroke();
+            drawLineEq(mCtx, 1, -1, mcx, mcy, mScale);
             mCtx.shadowBlur = 0;
         }
 
@@ -609,8 +682,10 @@
 
         function advanceRadar() {
             const dialogText = document.getElementById('dialogText');
+            const npcImg = document.getElementById('radarNpc');
             
             if (radarStep === 1) {
+                npcImg.src = "npc(7).webp"; 
                 dialogText.innerHTML = "범인의 도주 예상경로 <span class='blue-text'>x + y = 5</span> 입니다.<br>앗, 근데 지도위에 어떻게 나타내야하죠?";
                 radarStep = 2;
             }
@@ -619,15 +694,18 @@
                 radarStep = 3; 
             }
             else if (radarStep === 4) {
+                npcImg.src = "npc(6).webp"; 
                 dialogText.innerHTML = "경찰차 출동! <span class='red-text'>y = 2x - 4</span> 경로로 이동합니다.<br>범인을 잡으려면 어디에 가서 기다려야 할까요??";
                 animateProgress('polProgress');
                 radarStep = 5;
             }
             else if (radarStep === 5) {
+                npcImg.src = "npc(2).webp"; 
                 dialogText.innerHTML = "맞습니다! 두 경로의 <span class='highlight'>교점 (3, 2)</span>에서 잠복하면 됩니다.<br>연립방정식의 해를 순서쌍으로 나타낸 것과 똑같죠?";
                 radarStep = 6;
             }
             else if (radarStep === 6) {
+                npcImg.src = "npc(5).webp"; 
                 document.getElementById('summaryModalOverlay').classList.add('active');
             }
         }
@@ -636,7 +714,9 @@
             if(e) e.stopPropagation(); 
             document.getElementById('strategyModalOverlay').classList.remove('active');
             const dialogText = document.getElementById('dialogText');
+            const npcImg = document.getElementById('radarNpc');
             
+            npcImg.src = "npc(8).webp"; 
             dialogText.innerHTML = "수사관님 덕분에 무사히 전략을 짤 수 있게 되었어요.<br>이런, 범인이 이동하기 시작했군요!";
             animateProgress('crimProgress');
             radarStep = 4;
@@ -645,9 +725,11 @@
         function advanceProblem() {
             if (probStep === 1) {
                 document.getElementById('p1-ans').style.opacity = '1';
+                drawProbGraph1();
                 probStep = 2;
             } else if (probStep === 2) {
                 document.getElementById('p2-ans').style.opacity = '1';
+                drawProbGraph2();
                 probStep = 3;
             } else if (probStep === 3) {
                 document.getElementById('prob-hint').style.opacity = '1';
@@ -658,23 +740,44 @@
             }
         }
 
-        // 특수 상황 훈련(교사 설명) 애니메이션 로직
+        // [수정] 문제 1번 (1)번 공범 그래프 그리기
+        function drawProbGraph1() {
+            const pCtx = document.getElementById('prob1Canvas1').getContext('2d');
+            const mcx = 75, mcy = 75, mScale = 15; 
+            drawCommonGrid(pCtx, 150, mScale, mcx, mcy);
+            
+            pCtx.strokeStyle = '#38bdf8'; pCtx.lineWidth = 3;
+            drawLineEq(pCtx, 1, -1, mcx, mcy, mScale);
+            
+            pCtx.strokeStyle = '#10b981'; pCtx.lineWidth = 3;
+            drawLineEq(pCtx, 0.25, 0.5, mcx, mcy, mScale);
+        }
+
+        // [수정] 문제 1번 (2)번 공범 그래프 그리기
+        function drawProbGraph2() {
+            const pCtx = document.getElementById('prob1Canvas2').getContext('2d');
+            const mcx = 75, mcy = 75, mScale = 10; 
+            drawCommonGrid(pCtx, 150, mScale, mcx, mcy);
+            
+            pCtx.strokeStyle = '#fbbf24'; pCtx.lineWidth = 3;
+            drawLineEq(pCtx, -1.5, 0.5, mcx, mcy, mScale);
+            
+            pCtx.strokeStyle = '#10b981'; pCtx.lineWidth = 3;
+            drawLineEq(pCtx, 3, 8, mcx, mcy, mScale);
+        }
+
         function advanceSpecialTeach() {
             if (teachStep === 1) {
-                // Case 1 식 변환 보여주기
                 document.getElementById('teach1-conv').style.opacity = '1';
                 teachStep = 2;
             } else if (teachStep === 2) {
-                // Case 1 그래프 & 결과 보여주기
                 document.getElementById('teach1-graph-area').style.opacity = '1';
                 drawTeachGraph1();
                 teachStep = 3;
             } else if (teachStep === 3) {
-                // Case 2 식 변환 보여주기
                 document.getElementById('teach2-conv').style.opacity = '1';
                 teachStep = 4;
             } else if (teachStep === 4) {
-                // Case 2 그래프 & 결과 보여주기
                 document.getElementById('teach2-graph-area').style.opacity = '1';
                 drawTeachGraph2();
                 document.getElementById('teachHintText').innerText = "화면 클릭하여 실전 투입 ▼";
@@ -684,49 +787,102 @@
             }
         }
 
-        // 특수 상황 그래프 그리기 (Case 1: 평행)
         function drawTeachGraph1() {
             const mCtx = document.getElementById('teachCanvas1').getContext('2d');
             const mcx = 200, mcy = 200, mScale = 40; 
             drawCommonGrid(mCtx, 400, mScale, mcx, mcy);
             
-            // y = x - 1 (파란색)
             mCtx.strokeStyle = '#38bdf8'; mCtx.lineWidth = 6;
-            mCtx.beginPath(); mCtx.moveTo(mcx - 5*mScale, mcy - (-6)*mScale); mCtx.lineTo(mcx + 5*mScale, mcy - (4)*mScale); mCtx.stroke();
+            drawLineEq(mCtx, 1, -1, mcx, mcy, mScale);
             
-            // y = x + 2 (빨간색)
             mCtx.strokeStyle = '#f87171'; mCtx.lineWidth = 6;
-            mCtx.beginPath(); mCtx.moveTo(mcx - 5*mScale, mcy - (-3)*mScale); mCtx.lineTo(mcx + 5*mScale, mcy - (7)*mScale); mCtx.stroke();
+            drawLineEq(mCtx, 1, 2, mcx, mcy, mScale);
         }
 
-        // 특수 상황 그래프 그리기 (Case 2: 일치)
         function drawTeachGraph2() {
             const mCtx = document.getElementById('teachCanvas2').getContext('2d');
             const mcx = 200, mcy = 200, mScale = 40; 
             drawCommonGrid(mCtx, 400, mScale, mcx, mcy);
             
-            // y = -2x + 2 (일치함을 보이기 위해 파란선을 두껍게, 그 위에 초록 점선을 겹쳐 그림)
             mCtx.strokeStyle = '#38bdf8'; mCtx.lineWidth = 8;
-            mCtx.beginPath(); mCtx.moveTo(mcx - 3*mScale, mcy - (8)*mScale); mCtx.lineTo(mcx + 3*mScale, mcy - (-4)*mScale); mCtx.stroke();
+            drawLineEq(mCtx, -2, 2, mcx, mcy, mScale);
             
             mCtx.strokeStyle = '#10b981'; mCtx.lineWidth = 4;
-            mCtx.setLineDash([10, 10]); // 점선 설정
-            mCtx.beginPath(); mCtx.moveTo(mcx - 3*mScale, mcy - (8)*mScale); mCtx.lineTo(mcx + 3*mScale, mcy - (-4)*mScale); mCtx.stroke();
-            mCtx.setLineDash([]); // 점선 원복
+            mCtx.setLineDash([10, 10]);
+            drawLineEq(mCtx, -2, 2, mcx, mcy, mScale);
+            mCtx.setLineDash([]);
         }
 
-        // 특수 상황 실전 문제 로직
         function advanceSpecialPractice() {
             if (pracStep === 1) {
                 document.getElementById('prac1-ans').style.opacity = '1';
+                drawPracGraph1();
                 pracStep = 2;
             } else if (pracStep === 2) {
                 document.getElementById('prac2-ans').style.opacity = '1';
-                document.getElementById('pracHintText').innerText = "모든 작전 종료! 수고하셨습니다. (클릭 시 처음으로)";
+                drawPracGraph2();
+                document.getElementById('pracHintText').innerText = "화면 클릭하여 최종 요약 보고서 확인 ▼";
                 pracStep = 3;
             } else if (pracStep === 3) {
-                location.reload(); 
+                goTo('sceneFinal');
+                drawFinalGraphs();
+                pracStep = 4;
             }
+        }
+
+        function drawPracGraph1() {
+            const pCtx = document.getElementById('pracCanvas1').getContext('2d');
+            const mcx = 100, mcy = 100, mScale = 20; 
+            drawCommonGrid(pCtx, 200, mScale, mcx, mcy);
+            
+            pCtx.strokeStyle = '#38bdf8'; pCtx.lineWidth = 8;
+            drawLineEq(pCtx, -1/3, 4/3, mcx, mcy, mScale);
+            
+            pCtx.strokeStyle = '#10b981'; pCtx.lineWidth = 4;
+            pCtx.setLineDash([10, 10]);
+            drawLineEq(pCtx, -1/3, 4/3, mcx, mcy, mScale);
+            pCtx.setLineDash([]);
+        }
+
+        function drawPracGraph2() {
+            const pCtx = document.getElementById('pracCanvas2').getContext('2d');
+            const mcx = 100, mcy = 100, mScale = 20; 
+            drawCommonGrid(pCtx, 200, mScale, mcx, mcy);
+            
+            pCtx.strokeStyle = '#38bdf8'; pCtx.lineWidth = 4;
+            drawLineEq(pCtx, 3, -3, mcx, mcy, mScale);
+            
+            pCtx.strokeStyle = '#f87171'; pCtx.lineWidth = 4;
+            drawLineEq(pCtx, 3, 2, mcx, mcy, mScale);
+        }
+
+        function drawFinalGraphs() {
+            const drawMiniGrid = (ctx) => {
+                ctx.clearRect(0,0,150,150);
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth=1;
+                ctx.beginPath(); ctx.moveTo(0,75); ctx.lineTo(150,75); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(75,0); ctx.lineTo(75,150); ctx.stroke();
+            };
+
+            const c1 = document.getElementById('sumCanvas1').getContext('2d');
+            drawMiniGrid(c1);
+            c1.strokeStyle='#fca5a5'; c1.lineWidth=3;
+            drawLineEq(c1, 1, -1, 75, 75, 15);
+            c1.strokeStyle='#38bdf8'; 
+            drawLineEq(c1, -1, 1, 75, 75, 15);
+            c1.beginPath(); c1.arc(75, 75, 4, 0, Math.PI * 2); c1.fillStyle = '#ffffff'; c1.fill();
+
+            const c2 = document.getElementById('sumCanvas2').getContext('2d');
+            drawMiniGrid(c2);
+            c2.strokeStyle='#fbbf24'; c2.lineWidth=3;
+            drawLineEq(c2, 1, 2, 75, 75, 15);
+            c2.strokeStyle='#38bdf8';
+            drawLineEq(c2, 1, -2, 75, 75, 15);
+
+            const c3 = document.getElementById('sumCanvas3').getContext('2d');
+            drawMiniGrid(c3);
+            c3.strokeStyle='#38bdf8'; c3.lineWidth=5;
+            drawLineEq(c3, -1, 0, 75, 75, 15);
         }
     </script>
 </body>
