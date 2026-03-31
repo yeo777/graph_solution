@@ -123,6 +123,13 @@
 
         #warningMsg { color: #fbbf24; font-size: 1.2rem; margin-top: 20px; min-height: 30px; font-weight: bold; }
 
+        /* --- 긴급 무전 점멸 애니메이션 --- */
+        @keyframes emergencyFlash {
+            0%, 100% { background-color: rgba(239, 68, 68, 0.1); border-color: #ef4444; box-shadow: 0 0 80px rgba(239, 68, 68, 0.8); }
+            50% { background-color: rgba(239, 68, 68, 0.4); border-color: #f87171; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
+        }
+        .emergency-active { animation: emergencyFlash 0.8s infinite !important; }
+
         /* --- Scene 3: 레이더 --- */
         #scene3 { z-index: 10; background: transparent; }
         #radarCanvas { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
@@ -214,8 +221,8 @@
         <div class="modal-content">
             <div class="modal-title">📋 작전 브리핑 📋</div>
             <div class="btn-container">
-                <button id="btnPrep" class="game-btn" onclick="startPrep(event)">🔫 1. 출동 준비하기 (장비 점검)</button>
-                <button id="btnMission" class="game-btn" onclick="startMission(event)">🎯 2. 오늘의 미션 확인</button>
+                <button id="btnPrep" class="game-btn" onclick="startPrep(event)">출동 준비하기</button>
+                <button id="btnMission" class="game-btn" onclick="startMission(event)">오늘의 미션 확인</button>
             </div>
             <div id="warningMsg"></div>
         </div>
@@ -270,15 +277,15 @@
     <div id="strategyModalOverlay" onclick="closeStrategyModal(event)">
         <div class="modal-content" style="width: 800px; padding: 50px; cursor: pointer;">
             <div class="modal-title">💡 작전 타임</div>
-            <div style="font-size: 1.5rem; color: #cbd5e1;">지도(좌표평면)에 나타내기 위해 식을 이항하여 바꿔봅시다!</div>
+            <div style="font-size: 1.5rem; color: #cbd5e1;">지도에 나타내기 위해 식을 이항하여 바꿔봅시다!</div>
             <div class="summary-flex">
                 <div class="summary-box">
-                    <span style="color: #94a3b8; font-size: 1.2rem;">[일차방정식]</span><br><br>
+                    <span style="color: #94a3b8; font-size: 1.2rem;">[일차방정식]</span><br>
                     x + y = 5<br>2x - y = 4
                 </div>
                 <div class="summary-arrow">이항 ➔</div>
                 <div class="summary-box" style="border-color: #38bdf8;">
-                    <span style="color: #38bdf8; font-size: 1.2rem;">[일차함수]</span><br><br>
+                    <span style="color: #38bdf8; font-size: 1.2rem;">[일차함수]</span><br>
                     y = -x + 5<br>y = 2x - 4
                 </div>
             </div>
@@ -296,10 +303,22 @@
         </div>
     </div>
 
+    <div id="radioModalOverlay">
+        <div id="radioModalContent" class="modal-content emergency-active" style="width: 800px; padding: 50px; cursor: pointer;">
+            <div id="radioTitle" class="modal-title" style="color: #ef4444; font-size: 3.5rem;">🚨 긴급 무전 수신 중...</div>
+            <div id="radioText" style="font-size: 2.2rem; color: white; line-height: 1.8; display: none;">
+                관제센터에서 긴급 무전이 들어왔습니다!<br>
+                방금 잡은 범인의 <span style="color: #ef4444; font-weight: bold;">공범 2명</span>이 각각 다른 구역에서 도주 중이라고 합니다.<br>
+                우리 수사팀의 지원이 필요하다네요!
+            </div>
+            <div class="hint" style="position: relative; bottom: auto; right: auto; margin-top: 40px; font-size: 1.2rem;">화면 클릭 ▼</div>
+        </div>
+    </div>
+
     <div id="sceneProblem1" class="scene">
         <div class="text-box" style="min-width: 900px; margin-left: 15vw;">
             <span style="color: #ef4444; font-size: 2.5rem; display: block;">[추가 지령: 공범 검거 작전]</span>
-            <div style="font-size: 1.8rem;">다음 두 일차방정식의 그래프의 교점의 좌표(잠복 위치)를 구하시오.</div>
+            <div style="font-size: 1.8rem;">다음 두 일차방정식의 그래프의 교점의 좌표를 구하시오.</div>
             
             <div class="flex-row">
                 <div class="training-box">
@@ -321,8 +340,8 @@
             </div>
             
             <div id="prob-hint" style="color: #cbd5e1; font-size: 1.6rem; opacity: 0; transition: opacity 0.5s; line-height: 1.6; margin-top: 15px;">
-                "만약 그래프를 그렸다면 분수 좌표를 정확히 찍을 수 있었을까요?<br>
-                <span style="color: #fbbf24; font-weight: bold;">연립방정식을 푸는 것</span>이 얼마나 정확하고 강력한 도구인지 알겠죠?"
+                만약 그래프를 그렸다면 분수 좌표를 정확히 찍을 수 있었을까요?<br>
+                <span style="color: #fbbf24; font-weight: bold;">연립방정식을 푸는 것</span>이 얼마나 정확하고 강력한 도구인지 알겠죠?
             </div>
         </div>
         <div class="hint" id="probHintText">화면 클릭하여 정답 확인 ▼</div>
@@ -466,10 +485,28 @@
             
             if (document.getElementById('strategyModalOverlay').classList.contains('active')) return;
             
-            // [수정] 무전 모달 제거 후 바로 다음 씬으로 넘어가게 수정
+            // [수정] 요약창 클릭 시 -> 무전 모달 오픈
             if (document.getElementById('summaryModalOverlay').classList.contains('active')) {
                 document.getElementById('summaryModalOverlay').classList.remove('active');
-                goTo('sceneProblem1');
+                document.getElementById('radioModalOverlay').classList.add('active');
+                radarStep = 7;
+                return;
+            }
+
+            // [수정] 무전 모달 클릭 시 진행 제어
+            if (document.getElementById('radioModalOverlay').classList.contains('active')) {
+                if (radarStep === 7) {
+                    document.getElementById('radioModalContent').classList.remove('emergency-active');
+                    document.getElementById('radioModalContent').style.borderColor = "#38bdf8";
+                    document.getElementById('radioModalContent').style.boxShadow = "0 0 50px rgba(56, 189, 248, 0.3)";
+                    document.getElementById('radioTitle').innerText = "🚨 관제센터 무전";
+                    document.getElementById('radioTitle').style.color = "#38bdf8";
+                    document.getElementById('radioText').style.display = "block";
+                    radarStep = 8;
+                } else if (radarStep === 8) {
+                    document.getElementById('radioModalOverlay').classList.remove('active');
+                    goTo('sceneProblem1');
+                }
                 return;
             }
 
@@ -870,7 +907,6 @@
             drawLineEq(c1, 1, -1, 75, 75, 15);
             c1.strokeStyle='#38bdf8'; 
             drawLineEq(c1, -1, 1, 75, 75, 15);
-            c1.beginPath(); c1.arc(75, 75, 4, 0, Math.PI * 2); c1.fillStyle = '#ffffff'; c1.fill();
 
             const c2 = document.getElementById('sumCanvas2').getContext('2d');
             drawMiniGrid(c2);
